@@ -1,0 +1,30 @@
+# Resource Pack configuration
+pack:
+    # Namespace for model and textures
+    # Set it to your server's name
+    namespace: "entity-test"
+
+    # Resource Pack Format Version
+    format: 6
+
+    # Resource Pack Description
+    description: "Models for entity testing"
+
+    # How to generate the resource pack
+    # -> file:filename
+    #     -> Generates a resource pack as a file (ZIP)
+    # -> mergezipfile:filename
+    #     -> Similar to file:filename but if the file exists,
+    #        it will merge the contents instead of overwriting
+    #        them (ZIP)
+    # -> upload:authorization:url
+    #     -> Uploads the resource pack to the given URL (ZIP)
+    #     -> Use 'none' as authorization if no authorization
+    generate: "file:cubelet-generated.zip"
+
+# Scripting configuration
+script:
+    # What language to use for scripting
+    # Supported: molang and other languages, depending
+    # on your current JVM
+    lang: "molang"

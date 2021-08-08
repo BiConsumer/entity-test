@@ -1,0 +1,30 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'java'
+}
+
+group 'me.biconsumer.tests'
+version '1.0'
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.release.set(16)
+}
+
+repositories {
+    mavenLocal()
+    maven { url 'https://repo.codemc.io/repository/nms/' }
+    maven { url 'https://repo.unnamed.team/repository/unnamed-releases/' }
+    maven { url 'https://repo.unnamed.team/repository/unnamed-snapshots/' }
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'team.unnamed.hephaestus:hephaestus-api:0.1.0'
+    implementation 'team.unnamed.hephaestus:hephaestus-adapt-v1_17_R1:0.1.0'
+    compileOnly 'org.spigotmc:spigot:1.17.1-R0.1-SNAPSHOT'
+}
+
+shadowJar {
+    relocate 'team.unnamed.hephaestus', 'me.biconsumer.tests.entities.libs.hephaestus'
+}

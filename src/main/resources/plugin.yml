@@ -1,0 +1,6 @@
+main: me.biconsumer.tests.EntityTest
+name: EntityTest
+version: 1.0
+authors: [BiConsumer]
+api-version: 1.14
+load: STARTUP
