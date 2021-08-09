@@ -113,9 +113,13 @@ public abstract class AbstractModelEntity extends EntityCreature {
     }
 
     @Override
-    public void setLastDamager(@Nullable EntityLiving entityliving) {
-        super.setLastDamager(entityliving);
-        this.tracker.colorize(Color.fromRGB(240, 117, 105));
-        Bukkit.getScheduler().runTaskLater(plugin, () -> this.tracker.colorize(Color.WHITE), 6);
+    public boolean damageEntity(DamageSource damagesource, float f) {
+        boolean result = super.damageEntity(damagesource, f);
+        if (result) {
+            this.tracker.colorize(Color.fromRGB(240, 117, 105));
+            Bukkit.getScheduler().runTaskLater(plugin, () -> this.tracker.colorize(Color.WHITE), 6);
+        }
+
+        return result;
     }
 }
