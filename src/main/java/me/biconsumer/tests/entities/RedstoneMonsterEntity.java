@@ -1,6 +1,7 @@
 package me.biconsumer.tests.entities;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityLiving;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.goal.PathfinderGoalFloat;
@@ -111,9 +112,9 @@ public class RedstoneMonsterEntity extends AbstractModelEntity {
     }
 
     @Override
-    public void setLastDamager(@Nullable EntityLiving entityliving) {
+    public boolean damageEntity(DamageSource damagesource, float f) {
         if (awakened && !awakening) {
-            super.setLastDamager(entityliving);
+            return super.damageEntity(damagesource, f);
         }
 
         if (!this.awakened) {
@@ -127,5 +128,7 @@ public class RedstoneMonsterEntity extends AbstractModelEntity {
                 this.collides = true;
             }, 54L);
         }
+
+        return false;
     }
 }
