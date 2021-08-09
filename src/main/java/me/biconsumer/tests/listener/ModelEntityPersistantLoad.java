@@ -20,10 +20,12 @@ public class ModelEntityPersistantLoad implements Listener {
 
     private final Plugin plugin;
     private final ModelEntityRegistry registry;
+    private final NamespacedKey modelKey;
 
     public ModelEntityPersistantLoad(Plugin plugin, ModelEntityRegistry registry) {
         this.plugin = plugin;
         this.registry = registry;
+        this.modelKey = new NamespacedKey(plugin, "model_entity");
     }
 
     @EventHandler
@@ -33,8 +35,8 @@ public class ModelEntityPersistantLoad implements Listener {
         for (Entity entity : world.getEntities()) {
             PersistentDataContainer dataContainer = entity.getPersistentDataContainer();
 
-            if (dataContainer.has(new NamespacedKey(plugin, "model_entity"), PersistentDataType.STRING)) {
-                String modelName = dataContainer.get(new NamespacedKey(plugin, "model_entity"), PersistentDataType.STRING);
+            if (dataContainer.has(modelKey, PersistentDataType.STRING)) {
+                String modelName = dataContainer.get(modelKey, PersistentDataType.STRING);
 
                 AbstractModelEntity modelEntity = registry.create(modelName, ((CraftWorld) world).getHandle());
                 modelEntity.load(((CraftEntity) entity).getHandle().save(new NBTTagCompound()));

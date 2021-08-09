@@ -22,14 +22,16 @@ import java.lang.reflect.Field;
 
 public abstract class AbstractModelEntity extends EntityCreature {
 
+    private static Field ENTITY_SIZE_FIELD;
+    private static Field ENTITY_HEIGHT_FIELD;
+
     private final String modelName;
 
     protected final Plugin plugin;
     protected final ModelEntityTracker tracker;
     protected final Hitbox hitbox;
 
-    private static Field ENTITY_SIZE_FIELD;
-    private static Field ENTITY_HEIGHT_FIELD;
+    private final NamespacedKey modelKey;
 
     static {
         try {
@@ -57,6 +59,7 @@ public abstract class AbstractModelEntity extends EntityCreature {
         this.hitbox = hitbox;
         this.modelName = model.getName();
         this.tracker = new ModelEntityTracker(this.getBukkitEntity(), model, renderer, hip);
+        this.modelKey = new NamespacedKey(plugin, "model_entity");
     }
 
     public ModelEntityTracker getTracker() {
@@ -89,7 +92,7 @@ public abstract class AbstractModelEntity extends EntityCreature {
     @Override
     public NBTTagCompound save(NBTTagCompound nbttagcompound) {
         PersistentDataContainer dataContainer = this.getBukkitEntity().getPersistentDataContainer();
-        dataContainer.set(new NamespacedKey(plugin, "model_entity"), PersistentDataType.STRING, modelName);
+        dataContainer.set(modelKey, PersistentDataType.STRING, modelName);
 
         return super.save(nbttagcompound);
     }

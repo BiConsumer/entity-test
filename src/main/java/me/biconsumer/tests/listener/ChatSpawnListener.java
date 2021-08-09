@@ -28,26 +28,34 @@ public class ChatSpawnListener implements Listener {
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
-        if (event.getMessage().equals("spawn redstone")) {
+        if (event.getMessage().contains("spawn redstone")) {
+            String[] args = event.getMessage().split(" ");
+            int amount = 1;
+
+            if (args.length == 3) {
+                amount = Integer.parseInt(args[2]);
+            }
 
             Location location = event.getPlayer().getLocation();
 
-            RedstoneMonsterEntity redstoneMonsterEntity = registry.create(
-                            "redstone",
-                    ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle()
-            );
+            for (int i = 0; i < amount; i ++) {
+                RedstoneMonsterEntity redstoneMonsterEntity = registry.create(
+                        "redstone",
+                        ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle()
+                );
 
-            redstoneMonsterEntity.setPositionRotation(
-                    location.getX(),
-                    location.getY(),
-                    location.getZ(),
-                    location.getYaw(),
-                    location.getPitch()
-            );
+                redstoneMonsterEntity.setPositionRotation(
+                        location.getX(),
+                        location.getY(),
+                        location.getZ(),
+                        location.getYaw(),
+                        location.getPitch()
+                );
 
-            Bukkit.getScheduler().runTask(plugin, () ->
-                    ((CraftWorld) location.getWorld()).getHandle().addEntity(redstoneMonsterEntity, CreatureSpawnEvent.SpawnReason.CUSTOM)
-            );
+                Bukkit.getScheduler().runTask(plugin, () ->
+                        ((CraftWorld) location.getWorld()).getHandle().addEntity(redstoneMonsterEntity, CreatureSpawnEvent.SpawnReason.CUSTOM)
+                );
+            }
         }
     }
 }

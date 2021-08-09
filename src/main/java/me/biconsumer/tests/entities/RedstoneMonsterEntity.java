@@ -20,6 +20,8 @@ public class RedstoneMonsterEntity extends AbstractModelEntity {
     //TODO: FIND CORRECT VALUE FOR MOVEMENT SPEED
     private final static double MOVEMENT_SPEED = 0.25;
 
+    private final NamespacedKey awakenedKey;
+
     private boolean awakened = false;
     private boolean awakening = false;
 
@@ -42,6 +44,7 @@ public class RedstoneMonsterEntity extends AbstractModelEntity {
                 ),
                 -0.73
         );
+        this.awakenedKey = new NamespacedKey(plugin, "redstone_awakened");
         this.tracker.playAnimation("sleep", 1, 0);
         this.collides = false;
     }
@@ -49,7 +52,7 @@ public class RedstoneMonsterEntity extends AbstractModelEntity {
     @Override
     public NBTTagCompound save(NBTTagCompound nbttagcompound) {
         PersistentDataContainer dataContainer = this.getBukkitEntity().getPersistentDataContainer();
-        dataContainer.set(new NamespacedKey(plugin, "redstone_awakened"), PersistentDataType.INTEGER, this.awakened ? 1 : 0);
+        dataContainer.set(awakenedKey, PersistentDataType.INTEGER, this.awakened ? 1 : 0);
 
         return super.save(nbttagcompound);
     }
@@ -59,8 +62,8 @@ public class RedstoneMonsterEntity extends AbstractModelEntity {
         super.load(nbttagcompound);
 
         PersistentDataContainer dataContainer = this.getBukkitEntity().getPersistentDataContainer();
-        if (dataContainer.has(new NamespacedKey(plugin, "redstone_awakened"), PersistentDataType.INTEGER)) {
-            this.awakened = dataContainer.get(new NamespacedKey(plugin, "redstone_awakened"), PersistentDataType.INTEGER) == 1;
+        if (dataContainer.has(awakenedKey, PersistentDataType.INTEGER)) {
+            this.awakened = dataContainer.get(awakenedKey, PersistentDataType.INTEGER) == 1;
 
             if (this.awakened) {
                 this.tracker.stopAnimation("sleep");
