@@ -2,7 +2,10 @@ package me.biconsumer.tests.entities;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityCreature;
+import net.minecraft.world.entity.EntitySize;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.World;
 import net.minecraft.world.phys.AxisAlignedBB;
 import org.bukkit.Bukkit;
@@ -15,7 +18,6 @@ import org.bukkit.plugin.Plugin;
 import team.unnamed.hephaestus.model.Model;
 import team.unnamed.hephaestus.model.view.ModelViewRenderer;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 
 public abstract class AbstractModelEntity extends EntityCreature {

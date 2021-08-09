@@ -2,7 +2,7 @@ package me.biconsumer.tests.entities;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityLiving;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.goal.PathfinderGoalFloat;
 import net.minecraft.world.level.World;
@@ -14,8 +14,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import team.unnamed.hephaestus.model.Model;
 import team.unnamed.hephaestus.model.view.ModelViewRenderer;
-
-import javax.annotation.Nullable;
 
 public class RedstoneMonsterEntity extends AbstractModelEntity {
 
@@ -130,5 +128,12 @@ public class RedstoneMonsterEntity extends AbstractModelEntity {
         }
 
         return false;
+    }
+
+    @Override
+    public void collide(Entity entity) {
+        if (awakened && !awakening) {
+            super.collide(entity);
+        }
     }
 }
