@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
@@ -19,6 +20,7 @@ import team.unnamed.hephaestus.model.Model;
 import team.unnamed.hephaestus.model.view.ModelViewRenderer;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 public abstract class AbstractModelEntity extends EntityCreature {
 
@@ -47,14 +49,22 @@ public abstract class AbstractModelEntity extends EntityCreature {
 
     public AbstractModelEntity(
             EntityTypes<? extends EntityCreature> type,
-            World world,
+            Location location,
             Model model,
             Plugin plugin,
             ModelViewRenderer renderer,
             Hitbox hitbox,
             double hip
     ) {
-        super(type, world);
+        super(type, ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle());
+        this.setLocation(
+                location.getX(),
+                location.getY() + hip,
+                location.getZ(),
+                location.getYaw(),
+                location.getPitch()
+        );
+
         this.plugin = plugin;
         this.hitbox = hitbox;
         this.modelName = model.getName();

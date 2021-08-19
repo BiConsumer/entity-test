@@ -5,9 +5,16 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.goal.PathfinderGoalFloat;
+import net.minecraft.world.entity.ai.goal.PathfinderGoalMeleeAttack;
+import net.minecraft.world.entity.ai.goal.PathfinderGoalRandomLookaround;
+import net.minecraft.world.entity.ai.goal.PathfinderGoalRandomStroll;
+import net.minecraft.world.entity.ai.goal.target.PathfinderGoalHurtByTarget;
+import net.minecraft.world.entity.ai.goal.target.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.world.entity.player.EntityHuman;
 import net.minecraft.world.level.World;
 import net.minecraft.world.phys.Vec3D;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -26,14 +33,14 @@ public class RedstoneMonsterEntity extends AbstractModelEntity {
     private boolean awakening = false;
 
     public RedstoneMonsterEntity(
-            World world,
+            Location location,
             Model model,
             ModelViewRenderer renderer,
             Plugin plugin
     ) {
         super(
                 EntityTypes.ak,
-                world,
+                location,
                 model,
                 plugin,
                 renderer,
@@ -73,7 +80,10 @@ public class RedstoneMonsterEntity extends AbstractModelEntity {
 
     @Override
     protected void initPathfinder() {
-        this.bP.a(0, new PathfinderGoalFloat(this));
+        this.bQ.a(0, new PathfinderGoalFloat(this));
+        this.bQ.a(7, new PathfinderGoalRandomLookaround(this));
+        this.bQ.a(8, new PathfinderGoalRandomStroll(this, 1D));
+        this.bP.a(1, new PathfinderGoalNearestAttackableTarget<>(this, EntityHuman.class, true));
     }
 
     @Override

@@ -41,19 +41,16 @@ public class ChatSpawnListener implements Listener {
             for (int i = 0; i < amount; i ++) {
                 RedstoneMonsterEntity redstoneMonsterEntity = registry.create(
                         "redstone",
-                        ((CraftWorld) Objects.requireNonNull(location.getWorld())).getHandle()
-                );
-
-                redstoneMonsterEntity.setPositionRotation(
-                        location.getX(),
-                        location.getY(),
-                        location.getZ(),
-                        location.getYaw(),
-                        location.getPitch()
+                        event.getPlayer().getLocation()
                 );
 
                 Bukkit.getScheduler().runTask(plugin, () ->
-                        ((CraftWorld) location.getWorld()).getHandle().addEntity(redstoneMonsterEntity, CreatureSpawnEvent.SpawnReason.CUSTOM)
+                        ((CraftWorld) Objects.requireNonNull(location.getWorld()))
+                                .getHandle()
+                                .addEntity(
+                                        redstoneMonsterEntity,
+                                        CreatureSpawnEvent.SpawnReason.CUSTOM
+                                )
                 );
             }
         }

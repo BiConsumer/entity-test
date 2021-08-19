@@ -7,12 +7,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import team.unnamed.hephaestus.model.Model;
 import team.unnamed.hephaestus.model.animation.ModelAnimation;
-import team.unnamed.hephaestus.model.animation.ModelAnimationQueue;
 import team.unnamed.hephaestus.model.view.ModelView;
 import team.unnamed.hephaestus.model.view.ModelViewRenderer;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class ModelEntityTracker {
@@ -21,13 +20,11 @@ public class ModelEntityTracker {
 
     private final Entity entity;
     private final Model model;
-    private final ModelViewRenderer renderer;
     private final double hip;
 
-    private final ModelAnimationQueue animationQueue = new ModelAnimationQueue();
-    private final Map<UUID, ModelView> playerViews = new HashMap<>();
+    private final ModelView modelView;
 
-    private Color color = Color.WHITE;
+    private final Set<UUID> renderedPlayers = new HashSet<>();
 
     public ModelEntityTracker(
             Entity entity,
@@ -37,56 +34,37 @@ public class ModelEntityTracker {
     ) {
         this.entity = entity;
         this.model = model;
-        this.renderer = renderer;
         this.hip = hip;
+
+        this.modelView = renderer.render(model, entity.getLocation());
     }
 
     public void tick() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            ModelView modelView = playerViews.get(player.getUniqueId());
+            boolean isRendered = renderedPlayers.contains(player.getUniqueId());
 
-            if (modelView == null && player.getLocation().distance(entity.getLocation()) <= RENDER_RANGE) {
-                modelView = renderer.render(
-                        player,
-                        model,
-                        entity.getLocation().clone().add(0, hip, 0),
-                        animationQueue
-                );
-
-                modelView.animate();
-                modelView.colorize(color);
-                playerViews.put(player.getUniqueId(), modelView);
-            } else if (modelView != null && player.getLocation().distance(entity.getLocation()) > RENDER_RANGE) {
-                modelView.hide();
-                playerViews.remove(player.getUniqueId());
+            if (!isRendered && player.getLocation().distance(entity.getLocation()) <= RENDER_RANGE) {
+                modelView.addViewer(player);
+                renderedPlayers.add(player.getUniqueId());
+            } else if (isRendered && player.getLocation().distance(entity.getLocation()) > RENDER_RANGE) {
+                modelView.removeViewer(player);
+                renderedPlayers.remove(player.getUniqueId());
             }
         }
 
-        for (UUID uuid : this.playerViews.keySet()) {
-            if (Bukkit.getPlayer(uuid) == null) {
-                playerViews.get(uuid).hide();
-                playerViews.remove(uuid);
-            }
-        }
+        this.renderedPlayers.removeIf(uuid -> Bukkit.getPlayer(uuid) == null);
     }
 
     public void movementTick(Location location) {
-        for (ModelView modelView : this.playerViews.values()) {
-            modelView.teleport(location.clone().add(0, hip, 0));
-        }
+        modelView.teleport(location.clone().add(0, hip, 0));
     }
 
     public void die() {
-        for (ModelView view : this.playerViews.values()) {
-            view.hide();
-        }
+        modelView.hide();
     }
 
     public void colorize(Color color) {
-        this.color = color;
-        for (ModelView view : this.playerViews.values()) {
-            view.colorize(color);
-        }
+        modelView.colorize(color);
     }
 
     public void playAnimation(String animationName, int priority, int transitionTicks) {
@@ -94,15 +72,16 @@ public class ModelEntityTracker {
     }
 
     public void playAnimation(ModelAnimation animation, int priority, int transitionTicks) {
-        this.animationQueue.pushAnimation(animation, priority, transitionTicks);
+        this.modelView.playAnimation(animation, priority, transitionTicks);
     }
 
     public void stopAnimation(String animationName) {
-        this.animationQueue.removeAnimation(animationName);
+        this.modelView.stopAnimation(animationName);
     }
 
     public boolean isAnimationPlaying(String animationName) {
-        return this.animationQueue.getQueuedAnimations()
+        return this.modelView.getAnimationQueue()
+                .getQueuedAnimations()
                 .stream()
                 .anyMatch(animation -> animation.getName().equals(animationName));
     }

@@ -96,8 +96,8 @@ public class EntityTest extends JavaPlugin {
         ModelEntityRegistry entityRegistry = new ModelEntityRegistry();
         entityRegistry.register(
                 "redstone",
-                world -> new RedstoneMonsterEntity(
-                        world,
+                location -> new RedstoneMonsterEntity(
+                        location,
                         registry.get("redstone"),
                         renderer,
                         this

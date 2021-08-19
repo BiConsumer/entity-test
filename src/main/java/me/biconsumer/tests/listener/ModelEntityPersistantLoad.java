@@ -18,12 +18,10 @@ import org.bukkit.plugin.Plugin;
 
 public class ModelEntityPersistantLoad implements Listener {
 
-    private final Plugin plugin;
     private final ModelEntityRegistry registry;
     private final NamespacedKey modelKey;
 
     public ModelEntityPersistantLoad(Plugin plugin, ModelEntityRegistry registry) {
-        this.plugin = plugin;
         this.registry = registry;
         this.modelKey = new NamespacedKey(plugin, "model_entity");
     }
@@ -38,7 +36,7 @@ public class ModelEntityPersistantLoad implements Listener {
             if (dataContainer.has(modelKey, PersistentDataType.STRING)) {
                 String modelName = dataContainer.get(modelKey, PersistentDataType.STRING);
 
-                AbstractModelEntity modelEntity = registry.create(modelName, ((CraftWorld) world).getHandle());
+                AbstractModelEntity modelEntity = registry.create(modelName, entity.getLocation());
                 modelEntity.load(((CraftEntity) entity).getHandle().save(new NBTTagCompound()));
                 entity.remove();
 
